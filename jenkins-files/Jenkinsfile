@@ -1,0 +1,34 @@
+pipeline {
+    agent {
+        docker {
+            image 'node:18-alpine'
+            args '-u root:root'
+            reuseNode true
+        }
+    }
+    stages {
+        stage('Test') {
+            steps {
+                sh 'node --version'
+            }
+        }
+        stage('Getting Repo from GitHub') {
+            steps {
+                git 'https://github.com/nandiniachugatala/app-1.git'
+            }
+        }
+        stage('Build Project') {
+            steps {
+                sh 'rm -rf node_modules'
+                sh 'npm cache clean --force'
+                sh 'npm install'
+            }
+        }
+        stage('Deploy Project') {
+            steps {
+                sh 'pwd'
+                sh './node_modules/.bin/ng build'
+            }
+        }
+    }
+}
